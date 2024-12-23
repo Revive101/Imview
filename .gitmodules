@@ -1,0 +1,6 @@
+[submodule "submodule/Imcodec"]
+	path = submodule/Imcodec
+	url = https://github.com/Jooty/Imcodec
+[submodule "submodule/WizardTea"]
+	path = submodule/WizardTea
+	url = https://github.com/glomdom/WizardTea
