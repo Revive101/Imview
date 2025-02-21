@@ -1,30 +1,45 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.5.002.0
+VisualStudioVersion = 17.5.2.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{6008CB1E-541B-41B6-9794-C01DB7BD2BF6}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{A49389DA-8622-47DB-BE10-5CDD05D106E7}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Imview.Core", "src\Imview.Core\Imview.Core.csproj", "{38B05BE3-C5EE-4A23-805F-30EAC768C2A3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Imview.Core", "src\Imview.Core\Imview.Core.csproj", "{34BE8F4C-07F5-48E3-A667-F716D5E68616}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "submodule", "submodule", "{257CD229-414B-4A14-8635-C5646D8F801F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Imcodec", "Imcodec", "{E68B88B7-D285-4FB8-AEE7-0A57EBE9C0C2}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{3D917075-30F8-4470-B41E-FDB2EAC4DCDD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Imcodec.ObjectProperty", "submodule\Imcodec\src\Imcodec.ObjectProperty\Imcodec.ObjectProperty.csproj", "{402437B8-B14B-4145-92F3-48269E27112B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
-	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{38B05BE3-C5EE-4A23-805F-30EAC768C2A3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{38B05BE3-C5EE-4A23-805F-30EAC768C2A3}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{38B05BE3-C5EE-4A23-805F-30EAC768C2A3}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{38B05BE3-C5EE-4A23-805F-30EAC768C2A3}.Release|Any CPU.Build.0 = Release|Any CPU
-	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{38B05BE3-C5EE-4A23-805F-30EAC768C2A3} = {6008CB1E-541B-41B6-9794-C01DB7BD2BF6}
-	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D271B620-8F73-446D-ABA3-7F52BA90DC82}
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{34BE8F4C-07F5-48E3-A667-F716D5E68616}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{34BE8F4C-07F5-48E3-A667-F716D5E68616}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{34BE8F4C-07F5-48E3-A667-F716D5E68616}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{34BE8F4C-07F5-48E3-A667-F716D5E68616}.Release|Any CPU.Build.0 = Release|Any CPU
+		{402437B8-B14B-4145-92F3-48269E27112B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{402437B8-B14B-4145-92F3-48269E27112B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{402437B8-B14B-4145-92F3-48269E27112B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{402437B8-B14B-4145-92F3-48269E27112B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{34BE8F4C-07F5-48E3-A667-F716D5E68616} = {A49389DA-8622-47DB-BE10-5CDD05D106E7}
+		{E68B88B7-D285-4FB8-AEE7-0A57EBE9C0C2} = {257CD229-414B-4A14-8635-C5646D8F801F}
+		{3D917075-30F8-4470-B41E-FDB2EAC4DCDD} = {E68B88B7-D285-4FB8-AEE7-0A57EBE9C0C2}
+		{402437B8-B14B-4145-92F3-48269E27112B} = {3D917075-30F8-4470-B41E-FDB2EAC4DCDD}
 	EndGlobalSection
 EndGlobal
