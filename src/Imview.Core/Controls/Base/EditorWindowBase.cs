@@ -41,6 +41,7 @@ public abstract class EditorWindowBase<T> : Window where T : class {
         Title = title;
         Width = EditorConstants.DEFAULT_WINDOW_WIDTH;
         Height = EditorConstants.DEFAULT_WINDOW_HEIGHT;
+        Background = EditorConstants.DEFAULT_WINDOW_BACKGROUND;
 
         MainPanel = new StackPanel {
             Spacing = EditorConstants.DEFAULT_CONTROL_SPACING,

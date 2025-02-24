@@ -31,6 +31,7 @@ using Avalonia;
 using ReactiveUI;
 using Avalonia.Layout;
 using System.Collections.Generic;
+using Imview.Core.Controls.Results;
 
 namespace Imview.Core.Controls.Base;
 
@@ -40,7 +41,7 @@ namespace Imview.Core.Controls.Base;
 public abstract class GoalEditorWindowBase : EditorWindowBase<GoalTemplate> {
 
     protected new readonly GoalTemplate Template;
-    
+
     // Common controls
     protected TextBox GoalNameBox;
     protected NumericUpDown GoalNameIdBox;
@@ -110,7 +111,7 @@ public abstract class GoalEditorWindowBase : EditorWindowBase<GoalTemplate> {
         DestinationZoneBox = new TextBox();
         ClientTagsBox = new TextBox();
         GenericEventsBox = new TextBox();
-        
+
         GoalTypeBox = new ComboBox {
             ItemsSource = Enum.GetValues<GOAL_TYPE>()
         };
@@ -180,7 +181,7 @@ public abstract class GoalEditorWindowBase : EditorWindowBase<GoalTemplate> {
     protected virtual void SaveValues() {
         try {
             Template.m_goalName = new ByteString(GoalNameBox.Text ?? string.Empty);
-            Template.m_goalNameID = (uint)(GoalNameIdBox.Value ?? 0);
+            Template.m_goalNameID = (uint) (GoalNameIdBox.Value ?? 0);
             Template.m_goalTitle = new ByteString(GoalTitleBox.Text ?? string.Empty);
             Template.m_goalUnderway = new ByteString(GoalUnderwayBox.Text ?? string.Empty);
             Template.m_hyperlink = new ByteString(HyperlinkBox.Text ?? string.Empty);
@@ -212,24 +213,24 @@ public abstract class GoalEditorWindowBase : EditorWindowBase<GoalTemplate> {
     }
 
     protected async Task EditResult(Result result, ObservableCollection<Result> resultsList) {
-        //var editor = new ResultTemplateEditor(result);
-        //await editor.ShowDialog(this);
-//
-        //var editedResult = await editor.GetResultAsync();
-        //if (editedResult != null) {
-        //    var index = resultsList.IndexOf(result);
-        //    resultsList[index] = editedResult;
-        //}
+        var editor = new ResultTemplateEditor(result);
+        await editor.ShowDialog(this);
+
+        var editedResult = await editor.GetResultAsync();
+        if (editedResult != null) {
+            var index = resultsList.IndexOf(result);
+            resultsList[index] = editedResult;
+        }
     }
 
     protected async Task AddNewResult(ObservableCollection<Result> resultsList) {
-        //var editor = new ResultTemplateEditor();
-        //await editor.ShowDialog(this);
-//
-        //var result = await editor.GetResultAsync();
-        //if (result != null) {
-        //    resultsList.Add(result);
-        //}
+        var editor = new ResultTemplateEditor();
+        await editor.ShowDialog(this);
+
+        var result = await editor.GetResultAsync();
+        if (result != null) {
+            resultsList.Add(result);
+        }
     }
 
     protected StackPanel CreateBaseControlsPanel() {
@@ -286,9 +287,9 @@ public abstract class GoalEditorWindowBase : EditorWindowBase<GoalTemplate> {
         MainPanel.Children.Add(CreateGroupBox("Location and Display", locationContent));
         MainPanel.Children.Add(CreateGroupBox("Tags and Events", tagsContent));
         MainPanel.Children.Add(CreateGroupBox("Flags", flagsContent));
-        
+
 #pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
-        AddResultsPanel("Completion Results", CompletionResultsBox, 
+        AddResultsPanel("Completion Results", CompletionResultsBox,
             () => AddNewResult(CompletionResults),
             () => RemoveSelectedResult(CompletionResultsBox, CompletionResults));
 
@@ -340,5 +341,5 @@ public abstract class GoalEditorWindowBase : EditorWindowBase<GoalTemplate> {
             Console.WriteLine($"Error saving template: {ex}");
         }
     }
-    
+
 }

@@ -29,6 +29,9 @@ public static class EditorConstants {
    public const int DEFAULT_LIST_HEIGHT = 150;
    public const int DEFAULT_SELECTOR_WIDTH = 100;
 
+   public const int SMALL_WINDOW_WIDTH = 300;
+   public const int SMALL_WINDOW_HEIGHT = 400;
+
    public const int MESSAGE_DELAY_DEFAULT_IN_SECONDS = 5;
    public const string MESSAGE_BACKGROUND_COLOR = "#333";
 
@@ -46,5 +49,7 @@ public static class EditorConstants {
    public static readonly Avalonia.Thickness DEFAULT_GROUP_PADDING = new(10);
    public static readonly Avalonia.Thickness DEFAULT_BUTTON_MARGIN = new(0, 10, 0, 0);
    public static readonly Avalonia.CornerRadius DEFAULT_CORNER_RADIUS = new(5);
+   public static readonly Avalonia.Media.IBrush DEFAULT_WINDOW_BACKGROUND = 
+      new Avalonia.Media.SolidColorBrush(Avalonia.Media.Color.Parse("#1E1E1E"));
 
 }

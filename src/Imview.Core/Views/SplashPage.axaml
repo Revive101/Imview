@@ -16,9 +16,7 @@
             <StackPanel Spacing="20">
                 <Border Width="160" 
                         Height="160" 
-                        Background="Transparent"
-                        CornerRadius="24"
-                        BoxShadow="0 4 8 0 #1A1A1A">
+                        Background="Transparent">
                     <Image Source="avares://Imview.Core/Assets/logo.png"/>
                 </Border>
                 
