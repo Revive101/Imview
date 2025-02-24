@@ -27,22 +27,26 @@ namespace Imview.Core.ViewModels;
 
 public class MainWindowViewModel : ViewModelBase {
 
-    private bool _showSplashPage = true;
+    private ViewModelBase _currentViewModel;
 
     public MainWindowViewModel() {
+        _currentViewModel = new SplashPageViewModel(this);
         CreateQuestCommand = ReactiveCommand.Create(CreateNewQuest);
     }
 
-    public bool ShowSplashPage {
-        get => _showSplashPage;
-        set => this.RaiseAndSetIfChanged(ref _showSplashPage, value);
+    public ViewModelBase CurrentViewModel {
+        get => _currentViewModel;
+        set => this.RaiseAndSetIfChanged(ref _currentViewModel, value);
     }
 
     public ICommand CreateQuestCommand { get; }
 
-    private void CreateNewQuest() {
-        ShowSplashPage = false;
-        // TODO: Show quest editor
+    public void CreateNewQuest() {
+        CurrentViewModel = new QuestTemplateEditorViewModel(this);
+    }
+
+    public void ReturnToSplash() {
+        CurrentViewModel = new SplashPageViewModel(this);
     }
 
 }

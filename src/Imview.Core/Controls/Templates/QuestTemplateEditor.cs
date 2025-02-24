@@ -63,6 +63,9 @@ public partial class QuestTemplateEditor : UserControl {
     private CheckBox _questRepeatBox;
     private CheckBox _outdatedBox;
 
+    // Parameter-less constructor for design-time support
+    public QuestTemplateEditor() : this(null, null) { }
+
     public QuestTemplateEditor(QuestTemplate? template = null, IGoalEditorFactory? goalEditorFactory = null) {
         _template = template ?? new QuestTemplate();
         _goals = new ObservableCollection<GoalTemplate>(_template.m_goals ?? []);

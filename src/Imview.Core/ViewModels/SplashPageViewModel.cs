@@ -29,17 +29,13 @@ public class SplashPageViewModel : ViewModelBase {
 
     public ObservableCollection<SplashSectionViewModel> Sections { get; }
 
-    public SplashPageViewModel() 
+    public SplashPageViewModel(MainWindowViewModel mainViewModel) 
         => Sections = [
             new SplashSectionViewModel(
                 "Quests",
                 "Create Quest",
-                ReactiveCommand.Create(CreateNewQuest))
+                ReactiveCommand.Create(mainViewModel.CreateNewQuest))
         ];
-
-    private void CreateNewQuest() {
-        // todo
-    }
 
 }
 

@@ -18,16 +18,24 @@ modification, are permitted provided that the following conditions are met:
    this software without specific prior written permission.
 */
 
-using Avalonia.Controls;
-using Avalonia.Interactivity;
-using Avalonia.Markup.Xaml;
-using Avalonia.VisualTree;
-using Imview.Core.ViewModels;
+using System.Windows.Input;
+using ReactiveUI;
 
-namespace Imview.Core.Views;
+namespace Imview.Core.ViewModels;
 
-public partial class SplashPage : UserControl {
+public class QuestTemplateEditorViewModel : ViewModelBase {
 
-    public SplashPage() => InitializeComponent();
+    public ICommand BackToSplashCommand { get; }
 
+    private readonly MainWindowViewModel _mainViewModel;
+
+    public QuestTemplateEditorViewModel(MainWindowViewModel mainViewModel) {
+        _mainViewModel = mainViewModel;
+        BackToSplashCommand = ReactiveCommand.Create(BackToSplash);
+    }
+
+    private void BackToSplash() {
+        _mainViewModel.ReturnToSplash();
+    }
+    
 }

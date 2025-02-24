@@ -19,15 +19,12 @@ modification, are permitted provided that the following conditions are met:
 */
 
 using Avalonia.Controls;
-using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
-using Avalonia.VisualTree;
-using Imview.Core.ViewModels;
 
 namespace Imview.Core.Views;
 
-public partial class SplashPage : UserControl {
+public partial class QuestTemplateEditorView : UserControl {
 
-    public SplashPage() => InitializeComponent();
+    public QuestTemplateEditorView() => AvaloniaXamlLoader.Load(this);
 
 }

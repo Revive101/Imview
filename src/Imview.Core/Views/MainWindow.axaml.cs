@@ -19,11 +19,15 @@ modification, are permitted provided that the following conditions are met:
 */
 
 using Avalonia.Controls;
+using Imview.Core.ViewModels;
 
 namespace Imview.Core.Views;
 
 public partial class MainWindow : Window {
 
-   public MainWindow() => InitializeComponent();
+   public MainWindow() {
+      InitializeComponent();
+      DataContext = new MainWindowViewModel();
+   }
 
 }
