@@ -29,6 +29,19 @@ public static class EditorConstants {
    public const int DEFAULT_LIST_HEIGHT = 150;
    public const int DEFAULT_SELECTOR_WIDTH = 100;
 
+   public const int MESSAGE_DELAY_DEFAULT_IN_SECONDS = 5;
+   public const string MESSAGE_BACKGROUND_COLOR = "#333";
+
+   public const string MESSAGE_INFO_ACCENT = "#1751C3";
+   public const string MESSAGE_WARN_ACCENT = "#FFA500";
+   public const string MESSAGE_ERROR_ACCENT = "#FF0000";
+   public const string MESSAGE_FATAL_ACCENT = "#8B0000";
+
+   public const string MESSAGE_INFO_BADGE = "Info";
+   public const string MESSAGE_WARN_BADGE = "Warning";
+   public const string MESSAGE_ERROR_BADGE = "Error";
+   public const string MESSAGE_FATAL_BADGE = "Fatal";
+
    public static readonly Avalonia.Thickness DEFAULT_MARGIN_THICKNESS = new(DEFAULT_MARGIN);
    public static readonly Avalonia.Thickness DEFAULT_GROUP_PADDING = new(10);
    public static readonly Avalonia.Thickness DEFAULT_BUTTON_MARGIN = new(0, 10, 0, 0);

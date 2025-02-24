@@ -22,16 +22,22 @@ using System;
 using System.Windows.Input;
 using Imview.Core.ViewModels;
 using ReactiveUI;
+using Avalonia.Notification;
+using Imview.Core.Services;
 
 namespace Imview.Core.ViewModels;
 
 public class MainWindowViewModel : ViewModelBase {
+
+    public INotificationMessageManager Manager { get; } = new NotificationMessageManager();
 
     private ViewModelBase _currentViewModel;
 
     public MainWindowViewModel() {
         _currentViewModel = new SplashPageViewModel(this);
         CreateQuestCommand = ReactiveCommand.Create(CreateNewQuest);
+
+        MessageService.Initialize(Manager);
     }
 
     public ViewModelBase CurrentViewModel {
