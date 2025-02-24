@@ -1,0 +1,60 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:Imview.Core.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="500" d:DesignHeight="600"
+             x:Class="Imview.Core.Views.SplashPage"
+             x:DataType="vm:SplashPageViewModel">
+
+    <Grid Background="#1E1E1E">
+        <StackPanel VerticalAlignment="Center" 
+                    HorizontalAlignment="Center" 
+                    Spacing="40">
+            
+            <!-- Logo and Title -->
+            <StackPanel Spacing="20">
+                <Border Width="160" 
+                        Height="160" 
+                        Background="Transparent">
+                    <Image Source="avares://Imview.Core/Assets/logo.png"/>
+                </Border>
+                
+                <StackPanel Spacing="8" 
+                          HorizontalAlignment="Center">
+                    <TextBlock Text="Imview"
+                             FontSize="48"
+                             FontWeight="Bold"
+                             Foreground="White"
+                             HorizontalAlignment="Center"/>
+                             
+                    <TextBlock Text="Imlight's data recollection tool"
+                             FontSize="16"
+                             Foreground="#CCCCCC"
+                             HorizontalAlignment="Center"/>
+                </StackPanel>
+            </StackPanel>
+
+            <!-- Quests Section -->
+            <Border Background="#333333"
+                    CornerRadius="8"
+                    Margin="0,8"
+                    Padding="20"
+                    Width="400">
+                <StackPanel Spacing="16">
+                    <TextBlock Text="Quests"
+                             FontSize="24"
+                             FontWeight="SemiBold"
+                             Foreground="White"/>
+                    
+                    <Button Name="CreateQuestButton"
+                            Content="Create Quest"
+                            Command="{Binding Sections[0].Command}"
+                            HorizontalAlignment="Stretch"
+                            Height="40"
+                            Classes="accent"/>
+                </StackPanel>
+            </Border>
+        </StackPanel>
+    </Grid>
+</UserControl>

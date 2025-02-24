@@ -1,15 +1,35 @@
+/*
+BSD 3-Clause License
+
+Copyright (c) 2024, Jooty
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+1. Redistributions of source code must retain the above copyright notice, this
+   list of conditions and the following disclaimer.
+
+2. Redistributions in binary form must reproduce the above copyright notice,
+   this list of conditions and the following disclaimer in the documentation
+   and/or other materials provided with the distribution.
+
+3. Neither the name of the copyright holder nor the names of its
+   contributors may be used to endorse or promote products derived from
+   this software without specific prior written permission.
+*/
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Imcodec.ObjectProperty.TypeCache;
 
-namespace Imview.Core.Managers;
+namespace Imview.Core.Services;
 
 /// <summary>
 /// Utility class for discovering and managing Result types in the application.
 /// </summary>
-public static class ResultTypeManager {
+public static class ResultFinderService {
 
     private static readonly Dictionary<string, System.Type> s_resultTypes = [];
     private static bool s_isInitialized;
@@ -42,22 +62,7 @@ public static class ResultTypeManager {
             s_isInitialized = true;
         }
     }
-
-    /// <summary>
-    /// Creates a new instance of a Result type by its name.
-    /// </summary>
-    /// <param name="typeName">The name of the Result type to create</param>
-    /// <returns>A new instance of the specified Result type, or null if not found</returns>
-    public static Result CreateResult(string typeName) {
-        EnsureInitialized();
-
-        if (s_resultTypes.TryGetValue(typeName, out var resultType)) {
-            return (Result) Activator.CreateInstance(resultType);
-        }
-
-        return null;
-    }
-
+    
     /// <summary>
     /// Gets a Result type by its name.
     /// </summary>

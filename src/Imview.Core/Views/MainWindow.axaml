@@ -1,0 +1,34 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="clr-namespace:Imview.Core.ViewModels"
+        xmlns:views="clr-namespace:Imview.Core.Views"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:controls="clr-namespace:Avalonia.Notification.Controls;assembly=Notification.Avalonia"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="600"
+        x:Class="Imview.Core.Views.MainWindow"
+        x:DataType="vm:MainWindowViewModel"
+        Title="Imview"
+        MinWidth="800"
+        MinHeight="600"
+        Background="#1E1E1E">
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <ContentControl Content="{Binding CurrentViewModel}" Grid.Column="0">
+            <ContentControl.DataTemplates>
+                <DataTemplate DataType="{x:Type vm:SplashPageViewModel}">
+                    <views:SplashPage />
+                </DataTemplate>
+                <DataTemplate DataType="{x:Type vm:QuestTemplateEditorViewModel}">
+                    <views:QuestTemplateEditorView />
+                </DataTemplate>
+            </ContentControl.DataTemplates>
+        </ContentControl>
+
+        <controls:NotificationMessageContainer Manager="{Binding Manager}" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="10"/>
+    </Grid>
+</Window>
