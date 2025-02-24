@@ -77,4 +77,16 @@ public class PersonaGoalEditor : GoalEditorWindowBase {
         PersonaTemplate.m_goalType = GOAL_TYPE.GOAL_TYPE_PERSONA;
     }
 
+    protected override void Save() {
+        if (!ValidateState()) {
+            // TODO: Show validation error
+            return;
+        }
+
+        SaveValues();
+        SaveTypeSpecificValues();
+        ResultSource.SetResult(Template);
+        Close();
+    }
+
 }

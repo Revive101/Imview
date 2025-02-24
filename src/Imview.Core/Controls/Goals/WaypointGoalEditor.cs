@@ -91,4 +91,16 @@ public class WaypointGoalEditor : GoalEditorWindowBase {
         WaypointTemplate.m_goalType = GOAL_TYPE.GOAL_TYPE_WAYPOINT;
     }
 
+    protected override void Save() {
+        if (!ValidateState()) {
+            // TODO: Show validation error
+            return;
+        }
+
+        SaveValues();
+        SaveTypeSpecificValues();
+        ResultSource.SetResult(Template);
+        Close();
+    }
+
 }

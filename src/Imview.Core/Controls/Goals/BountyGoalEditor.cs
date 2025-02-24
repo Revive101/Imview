@@ -95,5 +95,17 @@ public class BountyGoalEditor : GoalEditorWindowBase {
             BountyTemplate.m_goalType = GOAL_TYPE.GOAL_TYPE_BOUNTY;
         }
     }
+    
+    protected override void Save() {
+        if (!ValidateState()) {
+            // TODO: Show validation error
+            return;
+        }
+
+        SaveValues();
+        SaveTypeSpecificValues();
+        ResultSource.SetResult(Template);
+        Close();
+    }
 
 }
