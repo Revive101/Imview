@@ -93,6 +93,7 @@ public abstract class GoalEditorWindowBase : EditorWindowBase<GoalTemplate> {
         Template = template ?? throw new ArgumentNullException(nameof(template));
 
         InitializeBaseControls();
+        InitializeValues();
         InitializeResultsLists();
     }
 
@@ -198,7 +199,7 @@ public abstract class GoalEditorWindowBase : EditorWindowBase<GoalTemplate> {
             Template.m_petOnlyQuest = PetOnlyQuestBox.IsChecked ?? false;
             Template.m_hideGoalFloatyText = HideGoalFloatyTextBox.IsChecked ?? false;
 
-            Template.m_goalType = (GOAL_TYPE) GoalTypeBox.SelectedItem!;
+            Template.m_goalType = (GOAL_TYPE) (GoalTypeBox.SelectedItem ?? Template.m_goalType);
 
             Template.m_completeResults = new ResultList { m_results = CompletionResults.ToList() };
             Template.m_activateResults = new ResultList { m_results = ActivationResults.ToList() };

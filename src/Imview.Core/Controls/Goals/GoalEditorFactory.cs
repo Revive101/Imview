@@ -34,13 +34,13 @@ namespace Imview.Core.Controls.Goals;
 /// </summary>
 public interface IGoalEditorFactory {
 
-    Task<GoalTemplate> CreateEditor(GoalTemplate? template = null);
+    Task<GoalTemplate> CreateEditor(GoalTemplate template);
 
 }
 
 public class GoalEditorFactory : IGoalEditorFactory {
 
-    public async Task<GoalTemplate> CreateEditor(GoalTemplate? template = null) {
+    public async Task<GoalTemplate> CreateEditor(GoalTemplate template) {
         Avalonia.Controls.Window editor = template switch {
             AchieveRankGoalTemplate rankTemplate => new AchieveRankGoalEditor(rankTemplate),
             BountyGoalTemplate bountyTemplate => new BountyGoalEditor(bountyTemplate),
