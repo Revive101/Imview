@@ -42,17 +42,23 @@
                     Padding="20"
                     Width="400">
                 <StackPanel Spacing="16">
-                    <TextBlock Text="Quests"
+                    <TextBlock Text="{Binding Sections[0].Title}"
                              FontSize="24"
                              FontWeight="SemiBold"
                              Foreground="White"/>
                     
-                    <Button Name="CreateQuestButton"
-                            Content="Create Quest"
-                            Command="{Binding Sections[0].Command}"
-                            HorizontalAlignment="Stretch"
-                            Height="40"
-                            Classes="accent"/>
+                    <StackPanel Spacing="8">
+                        <Button Content="{Binding Sections[0].CreateButtonText}"
+                                Command="{Binding Sections[0].CreateCommand}"
+                                HorizontalAlignment="Stretch"
+                                Height="40"
+                                Classes="accent"/>
+                                
+                        <Button Content="{Binding Sections[0].LoadButtonText}"
+                                Command="{Binding Sections[0].LoadCommand}"
+                                HorizontalAlignment="Stretch"
+                                Height="40"/>
+                    </StackPanel>
                 </StackPanel>
             </Border>
         </StackPanel>

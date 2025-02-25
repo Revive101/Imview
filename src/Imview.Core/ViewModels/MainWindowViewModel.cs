@@ -24,20 +24,29 @@ using Imview.Core.ViewModels;
 using ReactiveUI;
 using Avalonia.Notification;
 using Imview.Core.Services;
+using Avalonia.Controls;
 
 namespace Imview.Core.ViewModels;
 
 public class MainWindowViewModel : ViewModelBase {
 
     public INotificationMessageManager Manager { get; } = new NotificationMessageManager();
+    public ICommand CreateQuestCommand { get; }
+    public ICommand LoadQuestCommand { get; }
 
     private ViewModelBase _currentViewModel;
+    private Window _mainWindow;
 
     public MainWindowViewModel() {
         _currentViewModel = new SplashPageViewModel(this);
         CreateQuestCommand = ReactiveCommand.Create(CreateNewQuest);
+        LoadQuestCommand = ReactiveCommand.Create(LoadQuest);
 
         MessageService.Initialize(Manager);
+    }
+
+    public void Initialize(Window window) {
+        _mainWindow = window;
     }
 
     public ViewModelBase CurrentViewModel {
@@ -45,10 +54,25 @@ public class MainWindowViewModel : ViewModelBase {
         set => this.RaiseAndSetIfChanged(ref _currentViewModel, value);
     }
 
-    public ICommand CreateQuestCommand { get; }
-
     public void CreateNewQuest() {
         CurrentViewModel = new QuestTemplateEditorViewModel(this);
+    }
+
+    public async void LoadQuest() {
+        try {
+            var template = await TemplateSerializer.LoadTemplateAsync(_mainWindow);
+            if (template != null) {
+                CurrentViewModel = new QuestTemplateEditorViewModel(this, template);
+                MessageService.Info("Quest template loaded successfully!")
+                    .WithDuration(TimeSpan.FromSeconds(3))
+                    .Send();
+            }
+        }
+        catch (Exception ex) {
+            MessageService.Error($"Failed to load quest template: {ex.Message}")
+                .WithDuration(TimeSpan.FromSeconds(5))
+                .Send();
+        }
     }
 
     public void ReturnToSplash() {

@@ -115,7 +115,7 @@ public static class TemplateSerializer {
             return template;
         }
         catch {
-            return null;
+            throw;
         }
     }
 

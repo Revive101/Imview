@@ -20,17 +20,20 @@ modification, are permitted provided that the following conditions are met:
 
 using System.Windows.Input;
 using ReactiveUI;
+using Imcodec.ObjectProperty.TypeCache;
 
 namespace Imview.Core.ViewModels;
 
 public class QuestTemplateEditorViewModel : ViewModelBase {
 
     public ICommand BackToSplashCommand { get; }
+    public QuestTemplate Template { get; }
 
     private readonly MainWindowViewModel _mainViewModel;
 
-    public QuestTemplateEditorViewModel(MainWindowViewModel mainViewModel) {
+    public QuestTemplateEditorViewModel(MainWindowViewModel mainViewModel, QuestTemplate? template = null) {
         _mainViewModel = mainViewModel;
+        Template = template ?? new QuestTemplate();
         BackToSplashCommand = ReactiveCommand.Create(BackToSplash);
     }
 

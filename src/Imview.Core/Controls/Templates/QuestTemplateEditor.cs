@@ -45,6 +45,19 @@ namespace Imview.Core.Controls.Templates;
 /// </summary>
 public partial class QuestTemplateEditor : UserControl {
 
+    public static readonly StyledProperty<QuestTemplate> TemplateProperty =
+        AvaloniaProperty.Register<QuestTemplateEditor, QuestTemplate>(nameof(Template));
+
+    public QuestTemplate Template {
+        get => GetValue(TemplateProperty);
+        set {
+            SetValue(TemplateProperty, value);
+            if (value != null) {
+                PopulateFieldsWithTemplate(value);
+            }
+        }
+    }
+
     // Core properties
     private QuestTemplate _template;
     private readonly ObservableCollection<GoalTemplateWrapper> _goals;
@@ -606,22 +619,7 @@ public partial class QuestTemplateEditor : UserControl {
             var loadedTemplate = await TemplateSerializer.LoadTemplateAsync(parentWindow);
 
             if (loadedTemplate != null) {
-                // Update the current template with the loaded one.
-                _template = loadedTemplate;
-                _goals.Clear();
-                _goalLogics.Clear();
-
-                // Create goal wrappers with IsStartGoal property.
-                foreach (var goal in _template.m_goals ?? []) {
-                    var isStart = _template.m_startGoals?.Any(sg => sg.ToString() == goal.m_goalName?.ToString()) ?? false;
-                    _goals.Add(new GoalTemplateWrapper(goal, isStart));
-                }
-
-                foreach (var logic in _template.m_goalLogic ?? []) {
-                    _goalLogics.Add(new GoalCompleteLogicWrapper(logic));
-                }
-
-                InitializeValues();
+                PopulateFieldsWithTemplate(loadedTemplate);
 
                 MessageService
                     .Info("Quest template loaded successfully.")
@@ -633,6 +631,25 @@ public partial class QuestTemplateEditor : UserControl {
                 .Error($"Error loading template: {ex.Message}")
                 .Send();
         }
+    }
+
+    private void PopulateFieldsWithTemplate(QuestTemplate template) {
+        // Update the current template with the loaded one.
+        _template = template;
+        _goals.Clear();
+        _goalLogics.Clear();
+
+        // Create goal wrappers with IsStartGoal property.
+        foreach (var goal in _template.m_goals ?? []) {
+            var isStart = _template.m_startGoals?.Any(sg => sg.ToString() == goal.m_goalName?.ToString()) ?? false;
+            _goals.Add(new GoalTemplateWrapper(goal, isStart));
+        }
+
+        foreach (var logic in _template.m_goalLogic ?? []) {
+            _goalLogics.Add(new GoalCompleteLogicWrapper(logic));
+        }
+
+        InitializeValues();
     }
 
 }
