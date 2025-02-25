@@ -34,21 +34,30 @@ public class SplashPageViewModel : ViewModelBase {
             new SplashSectionViewModel(
                 "Quests",
                 "Create Quest",
-                ReactiveCommand.Create(mainViewModel.CreateNewQuest))
+                "Load Quest",
+                mainViewModel.CreateNewQuest,
+                mainViewModel.LoadQuest)
         ];
-
 }
 
 public class SplashSectionViewModel {
 
     public string Title { get; }
-    public string ButtonText { get; }
-    public ICommand Command { get; }
+    public string CreateButtonText { get; }
+    public string LoadButtonText { get; }
+    public ICommand CreateCommand { get; }
+    public ICommand LoadCommand { get; }
 
-    public SplashSectionViewModel(string title, string buttonText, ICommand command) {
+    public SplashSectionViewModel(
+        string title, 
+        string createButtonText, 
+        string loadButtonText,
+        System.Action createAction, 
+        System.Action loadAction) {
         Title = title;
-        ButtonText = buttonText;
-        Command = command;
+        CreateButtonText = createButtonText;
+        LoadButtonText = loadButtonText;
+        CreateCommand = ReactiveCommand.Create(createAction);
+        LoadCommand = ReactiveCommand.Create(loadAction);
     }
-
 }

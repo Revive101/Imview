@@ -34,6 +34,9 @@ using Imcodec.IO;
 using Imview.Core.Controls.Goals;
 using Avalonia.Controls.Templates;
 using System.Threading.Tasks;
+using Imview.Core.Services;
+using Avalonia.VisualTree;
+using Avalonia.ReactiveUI;
 
 namespace Imview.Core.Controls.Templates;
 
@@ -42,8 +45,21 @@ namespace Imview.Core.Controls.Templates;
 /// </summary>
 public partial class QuestTemplateEditor : UserControl {
 
+    public static readonly StyledProperty<QuestTemplate> TemplateProperty =
+        AvaloniaProperty.Register<QuestTemplateEditor, QuestTemplate>(nameof(Template));
+
+    public QuestTemplate Template {
+        get => GetValue(TemplateProperty);
+        set {
+            SetValue(TemplateProperty, value);
+            if (value != null) {
+                PopulateFieldsWithTemplate(value);
+            }
+        }
+    }
+
     // Core properties
-    private readonly QuestTemplate _template;
+    private QuestTemplate _template;
     private readonly ObservableCollection<GoalTemplateWrapper> _goals;
     private readonly ObservableCollection<GoalCompleteLogicWrapper> _goalLogics;
     private readonly IGoalEditorFactory _goalEditorFactory;
@@ -523,7 +539,7 @@ public partial class QuestTemplateEditor : UserControl {
         }
     }
 
-    private void SaveTemplate() {
+    private async void SaveTemplate() {
         try {
             // Save basic quest properties.
             _template.m_questName = new ByteString(_questNameBox.Text ?? string.Empty);
@@ -555,22 +571,85 @@ public partial class QuestTemplateEditor : UserControl {
             // Save goal logic.
             _template.m_goalLogic = _goalLogics.Select(wrapper => wrapper.Logic).ToList();
 
-            // TODO: Save template to file
+            // Get the parent window for the save dialog.
+            var parentWindow = this.FindAncestorOfType<Avalonia.Controls.Window>();
+            if (parentWindow == null) {
+                var appLifetime = Application.Current?.ApplicationLifetime
+                    as Avalonia.Controls.ApplicationLifetimes.IClassicDesktopStyleApplicationLifetime;
+                parentWindow = appLifetime?.MainWindow;
+            }
+
+            if (parentWindow == null) {
+                MessageService
+                    .Error("Could not find parent window for save dialog.")
+                    .Send();
+                return;
+            }
+
+            var success = await TemplateSerializer.SaveTemplateAsync(_template, parentWindow);
+            if (success) {
+                MessageService
+                    .Info("Quest template saved successfully.")
+                    .Send();
+            }
         }
         catch (Exception ex) {
-            // TODO: Show error dialog
-            Console.WriteLine($"Error saving template: {ex}");
+            MessageService
+                .Error($"Error saving template: {ex.Message}")
+                .Send();
         }
     }
 
-    private void LoadTemplate() {
+    private async void LoadTemplate() {
         try {
-            // TODO: Implement template loading
+            // Get the parent window for the load dialog
+            var parentWindow = this.FindAncestorOfType<Avalonia.Controls.Window>();
+            if (parentWindow == null) {
+                var appLifetime = Application.Current?.ApplicationLifetime as Avalonia.Controls.ApplicationLifetimes.IClassicDesktopStyleApplicationLifetime;
+                parentWindow = appLifetime?.MainWindow;
+            }
+
+            if (parentWindow == null) {
+                MessageService
+                    .Error("Could not find parent window for load dialog.")
+                    .Send();
+                return;
+            }
+
+            var loadedTemplate = await TemplateSerializer.LoadTemplateAsync(parentWindow);
+
+            if (loadedTemplate != null) {
+                PopulateFieldsWithTemplate(loadedTemplate);
+
+                MessageService
+                    .Info("Quest template loaded successfully.")
+                    .Send();
+            }
         }
         catch (Exception ex) {
-            // TODO: Show error dialog
-            Console.WriteLine($"Error loading template: {ex}");
+            MessageService
+                .Error($"Error loading template: {ex.Message}")
+                .Send();
         }
+    }
+
+    private void PopulateFieldsWithTemplate(QuestTemplate template) {
+        // Update the current template with the loaded one.
+        _template = template;
+        _goals.Clear();
+        _goalLogics.Clear();
+
+        // Create goal wrappers with IsStartGoal property.
+        foreach (var goal in _template.m_goals ?? []) {
+            var isStart = _template.m_startGoals?.Any(sg => sg.ToString() == goal.m_goalName?.ToString()) ?? false;
+            _goals.Add(new GoalTemplateWrapper(goal, isStart));
+        }
+
+        foreach (var logic in _template.m_goalLogic ?? []) {
+            _goalLogics.Add(new GoalCompleteLogicWrapper(logic));
+        }
+
+        InitializeValues();
     }
 
 }

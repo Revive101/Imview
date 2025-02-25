@@ -19,12 +19,25 @@ modification, are permitted provided that the following conditions are met:
 */
 
 using Avalonia.Controls;
-using Avalonia.Markup.Xaml;
+using Imview.Core.Controls.Templates;
+using Imview.Core.ViewModels;
 
 namespace Imview.Core.Views;
 
 public partial class QuestTemplateEditorView : UserControl {
+   
+   public QuestTemplateEditorView() {
+      InitializeComponent();
 
-    public QuestTemplateEditorView() => AvaloniaXamlLoader.Load(this);
+      // Wait for DataContext to be set
+      DataContextChanged += (s, e) => {
+         if (DataContext is QuestTemplateEditorViewModel vm) {
+            var editor = this.FindControl<QuestTemplateEditor>("QuestEditor");
+            if (editor != null) {
+               editor.Template = vm.Template;
+            }
+         }
+      };
+   }
 
 }

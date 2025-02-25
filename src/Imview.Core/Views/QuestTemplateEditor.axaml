@@ -5,9 +5,10 @@
              xmlns:vm="clr-namespace:Imview.Core.ViewModels"
              xmlns:templates="clr-namespace:Imview.Core.Controls.Templates"
              mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="800"
-             x:Class="Imview.Core.Views.QuestTemplateEditorView">
+             x:Class="Imview.Core.Views.QuestTemplateEditorView"
+             x:DataType="vm:QuestTemplateEditorViewModel">
 
     <Grid Background="#1E1E1E" Margin="20">
-        <templates:QuestTemplateEditor x:Name="QuestEditor"/>
+        <templates:QuestTemplateEditor x:Name="QuestEditor" Template="{Binding Template}"/>
     </Grid>
 </UserControl>
