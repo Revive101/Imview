@@ -25,6 +25,7 @@ using Imcodec.ObjectProperty.TypeCache;
 using System.Collections.Generic;
 using Avalonia.Platform.Storage;
 using System.Text.Json;
+using Imcodec.ObjectProperty;
 
 namespace Imview.Core.Services;
 
@@ -74,11 +75,13 @@ public static class TemplateSerializer {
                     Directory.CreateDirectory(directory);
                 }
 
-                // Write file JSON.
-                var jsonEncoded = JsonSerializer.Serialize(template, new JsonSerializerOptions {
-                    WriteIndented = true
-                });
-                File.WriteAllText(filePath, jsonEncoded);
+                // Write serialized file.
+                var serializer = new ObjectSerializer(false);
+                if (!serializer.Serialize(template, 1, out var data)) {
+                    throw new Exception("Failed to serialize template data.");
+                }
+
+                File.WriteAllBytes(filePath, data);
             });
 
             return true;
@@ -109,8 +112,11 @@ public static class TemplateSerializer {
             var filePath = fileResult[0].Path.LocalPath;
 
             // Deserialize the template from the selected file.
-            var jsonEncoded = await File.ReadAllTextAsync(filePath);
-            var template = JsonSerializer.Deserialize<QuestTemplate>(jsonEncoded);
+            var serializer = new ObjectSerializer(false);
+            var data = File.ReadAllBytes(filePath);
+            if (!serializer.Deserialize<QuestTemplate>(data, 1, out var template)) {
+                return null;
+            }
 
             return template;
         }
