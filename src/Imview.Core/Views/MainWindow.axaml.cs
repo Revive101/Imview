@@ -19,6 +19,7 @@ modification, are permitted provided that the following conditions are met:
 */
 
 using Avalonia.Controls;
+using Imview.Core.Common.Constants;
 using Imview.Core.ViewModels;
 
 namespace Imview.Core.Views;
@@ -30,6 +31,9 @@ public partial class MainWindow : Window {
       var viewModel = new MainWindowViewModel();
       viewModel.Initialize(this);
       DataContext = viewModel;
+
+      Height = EditorConstants.SPLASH_WINDOW_HEIGHT;
+      Width = EditorConstants.SPLASH_WINDOW_WIDTH;
    }
 
 }

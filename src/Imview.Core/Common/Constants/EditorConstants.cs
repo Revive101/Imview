@@ -29,6 +29,9 @@ public static class EditorConstants {
    public const int DEFAULT_LIST_HEIGHT = 150;
    public const int DEFAULT_SELECTOR_WIDTH = 100;
 
+   public const int SPLASH_WINDOW_WIDTH = 850;
+   public const int SPLASH_WINDOW_HEIGHT = 800;
+
    public const int SMALL_WINDOW_WIDTH = 300;
    public const int SMALL_WINDOW_HEIGHT = 400;
 
