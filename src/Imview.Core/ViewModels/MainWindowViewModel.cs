@@ -25,6 +25,8 @@ using ReactiveUI;
 using Avalonia.Notification;
 using Imview.Core.Services;
 using Avalonia.Controls;
+using System.Collections.Generic;
+using Imcodec.ObjectProperty.TypeCache;
 
 namespace Imview.Core.ViewModels;
 
@@ -35,7 +37,7 @@ public class MainWindowViewModel : ViewModelBase {
     public ICommand LoadQuestCommand { get; }
 
     private ViewModelBase _currentViewModel;
-    private Window? _mainWindow;
+    private Avalonia.Controls.Window? _mainWindow;
 
     public MainWindowViewModel() {
         _currentViewModel = new SplashPageViewModel(this);
@@ -45,7 +47,7 @@ public class MainWindowViewModel : ViewModelBase {
         MessageService.Initialize(Manager);
     }
 
-    public void Initialize(Window window) {
+    public void Initialize(Avalonia.Controls.Window window) {
         _mainWindow = window;
     }
 
@@ -64,7 +66,7 @@ public class MainWindowViewModel : ViewModelBase {
                 MessageService.Error("Main window is not initialized.")
                     .WithDuration(TimeSpan.FromSeconds(5))
                     .Send();
-                    
+
                 return;
             }
 
@@ -83,11 +85,55 @@ public class MainWindowViewModel : ViewModelBase {
         }
     }
 
-    public void GetQuestsFromPacketCapture() {
-        // Placeholder for future implementation
-        MessageService.Info("This feature is not yet implemented.")
-            .WithDuration(TimeSpan.FromSeconds(3))
-            .Send();
+    public async void GetQuestsFromPacketCapture() {
+        try {
+            if (_mainWindow == null) {
+                MessageService.Error("Main window is not initialized.")
+                    .WithDuration(TimeSpan.FromSeconds(5))
+                    .Send();
+
+                return;
+            }
+
+            var options = new Avalonia.Platform.Storage.FilePickerOpenOptions {
+                Title = "Select Packet Capture File",
+                AllowMultiple = false,
+                FileTypeFilter = [
+                new("JSON Packet Capture") {
+                    Patterns = ["*.json"]
+                },
+                new("All Files") {
+                    Patterns = ["*.*"]
+                }
+            ]
+            };
+
+            var files = await _mainWindow.StorageProvider.OpenFilePickerAsync(options);
+            if (files == null || files.Count == 0) {
+                // User cancelled.
+                return;
+            }
+
+            var filePath = files[0].Path.LocalPath;
+
+            MessageService.Info("Reading packet capture, please wait...")
+                .WithDuration(TimeSpan.FromSeconds(3))
+                .Send();
+
+            var questTemplates = await QuestPacketReaderService.ReadQuestsFromPacketCaptureAsync(filePath);
+
+            // Switch to the packet view with the extracted quest templates.
+            CurrentViewModel = new PacketQuestViewModel(this, filePath, questTemplates);
+        }
+        catch (Exception ex) {
+            MessageService.Error($"Failed to load packet capture: {ex.Message}")
+                .WithDuration(TimeSpan.FromSeconds(5))
+                .Send();
+        }
+    }
+
+    public void EditQuestTemplate(QuestTemplate template) {
+        CurrentViewModel = new QuestTemplateEditorViewModel(this, template);
     }
 
     public void ReturnToSplash() {

@@ -26,6 +26,9 @@
                 <DataTemplate DataType="{x:Type vm:QuestTemplateEditorViewModel}">
                     <views:QuestTemplateEditorView />
                 </DataTemplate>
+                <DataTemplate DataType="{x:Type vm:PacketQuestViewModel}">
+                    <views:PacketQuestView />
+                </DataTemplate>
             </ContentControl.DataTemplates>
         </ContentControl>
 

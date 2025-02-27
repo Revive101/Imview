@@ -1,0 +1,86 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:Imview.Core.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="600"
+             x:Class="Imview.Core.Views.PacketQuestView"
+             x:DataType="vm:PacketQuestViewModel">
+
+    <Grid Background="#1E1E1E" Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        
+        <!-- Header -->
+        <StackPanel Grid.Row="0" Spacing="10" Margin="0,0,0,20">
+            <TextBlock Text="Quests From Packet Capture" 
+                       FontSize="24" 
+                       FontWeight="Bold" />
+            <TextBlock Text="{Binding SourceFilePath}" 
+                       Foreground="#CCCCCC"
+                       FontStyle="Italic" />
+        </StackPanel>
+        
+        <!-- List of Quests -->
+        <Border Grid.Row="1" 
+                BorderBrush="#333333" 
+                BorderThickness="1" 
+                CornerRadius="5">
+            <Grid>
+                <TextBlock Text="No quests found in the packet capture."
+                           IsVisible="{Binding !HasQuests}"
+                           VerticalAlignment="Center"
+                           HorizontalAlignment="Center"
+                           Foreground="#CCCCCC" />
+                           
+                <ListBox ItemsSource="{Binding QuestTemplates}"
+                         IsVisible="{Binding HasQuests}"
+                         Background="Transparent"
+                         SelectedItem="{Binding SelectedQuest}">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Border Padding="10" Margin="0,5">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    
+                                    <StackPanel Grid.Column="0" Spacing="5">
+                                        <TextBlock Text="{Binding m_questTitle}"
+                                                   FontWeight="SemiBold" />
+                                        <TextBlock Text="{Binding m_questName}"
+                                                   FontSize="12"
+                                                   Foreground="#CCCCCC" />
+                                    </StackPanel>
+                                    
+                                    <TextBlock Grid.Column="1"
+                                               Text="{Binding m_questLevel, StringFormat='Level {0}'}"
+                                               VerticalAlignment="Center"
+                                               Foreground="#CCCCCC" />
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </Grid>
+        </Border>
+        
+        <!-- Action Buttons -->
+        <StackPanel Grid.Row="2" 
+                    Orientation="Horizontal" 
+                    HorizontalAlignment="Right"
+                    Spacing="10"
+                    Margin="0,20,0,0">
+            <Button Content="Edit Selected Quest"
+                    Command="{Binding EditSelectedQuestCommand}"
+                    IsEnabled="{Binding HasSelectedQuest}" />
+            <Button Content="Return to Main Menu"
+                    Command="{Binding BackToSplashCommand}" />
+        </StackPanel>
+    </Grid>
+    
+</UserControl>

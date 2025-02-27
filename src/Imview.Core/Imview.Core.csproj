@@ -25,6 +25,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\submodule\Imcodec\src\Imcodec.ObjectProperty\Imcodec.ObjectProperty.csproj" />
+    <ProjectReference Include="..\Imview.PacketReader\Imview.PacketReader.csproj" />
   </ItemGroup>
 
   <ItemGroup>
