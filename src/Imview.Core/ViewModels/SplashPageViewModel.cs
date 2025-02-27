@@ -35,8 +35,10 @@ public class SplashPageViewModel : ViewModelBase {
                 "Quests",
                 "Create Quest",
                 "Load Quest",
+                "Get Quests From Packet Capture",
                 mainViewModel.CreateNewQuest,
-                mainViewModel.LoadQuest)
+                mainViewModel.LoadQuest,
+                mainViewModel.GetQuestsFromPacketCapture)
         ];
 }
 
@@ -45,19 +47,26 @@ public class SplashSectionViewModel {
     public string Title { get; }
     public string CreateButtonText { get; }
     public string LoadButtonText { get; }
+    public string GetQuestsFromPacketCaptureButtonText { get; }
     public ICommand CreateCommand { get; }
     public ICommand LoadCommand { get; }
+    public ICommand GetQuestsFromPacketCaptureCommand { get; }
 
     public SplashSectionViewModel(
         string title, 
         string createButtonText, 
         string loadButtonText,
+        string getQuestsFromPacketCaptureButtonText,
         System.Action createAction, 
-        System.Action loadAction) {
+        System.Action loadAction,
+        System.Action getQuestsFromPacketCaptureAction) {
         Title = title;
         CreateButtonText = createButtonText;
         LoadButtonText = loadButtonText;
+        GetQuestsFromPacketCaptureButtonText = getQuestsFromPacketCaptureButtonText;
         CreateCommand = ReactiveCommand.Create(createAction);
         LoadCommand = ReactiveCommand.Create(loadAction);
+        GetQuestsFromPacketCaptureCommand = ReactiveCommand.Create(getQuestsFromPacketCaptureAction);
     }
+
 }

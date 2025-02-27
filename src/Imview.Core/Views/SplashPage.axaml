@@ -58,6 +58,11 @@
                                 Command="{Binding Sections[0].LoadCommand}"
                                 HorizontalAlignment="Stretch"
                                 Height="40"/>
+
+                        <Button Content="{Binding Sections[0].GetQuestsFromPacketCaptureButtonText}"
+                                Command="{Binding Sections[0].GetQuestsFromPacketCaptureCommand}"
+                                HorizontalAlignment="Stretch"
+                                Height="40"/>
                     </StackPanel>
                 </StackPanel>
             </Border>

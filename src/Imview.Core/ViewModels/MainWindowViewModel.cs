@@ -35,7 +35,7 @@ public class MainWindowViewModel : ViewModelBase {
     public ICommand LoadQuestCommand { get; }
 
     private ViewModelBase _currentViewModel;
-    private Window _mainWindow;
+    private Window? _mainWindow;
 
     public MainWindowViewModel() {
         _currentViewModel = new SplashPageViewModel(this);
@@ -60,6 +60,14 @@ public class MainWindowViewModel : ViewModelBase {
 
     public async void LoadQuest() {
         try {
+            if (_mainWindow == null) {
+                MessageService.Error("Main window is not initialized.")
+                    .WithDuration(TimeSpan.FromSeconds(5))
+                    .Send();
+                    
+                return;
+            }
+
             var template = await TemplateSerializer.LoadTemplateAsync(_mainWindow);
             if (template != null) {
                 CurrentViewModel = new QuestTemplateEditorViewModel(this, template);
@@ -73,6 +81,13 @@ public class MainWindowViewModel : ViewModelBase {
                 .WithDuration(TimeSpan.FromSeconds(5))
                 .Send();
         }
+    }
+
+    public void GetQuestsFromPacketCapture() {
+        // Placeholder for future implementation
+        MessageService.Info("This feature is not yet implemented.")
+            .WithDuration(TimeSpan.FromSeconds(3))
+            .Send();
     }
 
     public void ReturnToSplash() {

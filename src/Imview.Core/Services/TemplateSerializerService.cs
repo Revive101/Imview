@@ -81,6 +81,10 @@ public static class TemplateSerializer {
                     throw new Exception("Failed to serialize template data.");
                 }
 
+                if (data is null) {
+                    throw new Exception("Serialized data is null.");
+                }
+
                 File.WriteAllBytes(filePath, data);
             });
 
@@ -91,7 +95,7 @@ public static class TemplateSerializer {
         }
     }
 
-    public static async Task<QuestTemplate> LoadTemplateAsync(Avalonia.Controls.Window parentWindow) {
+    public static async Task<QuestTemplate?> LoadTemplateAsync(Avalonia.Controls.Window parentWindow) {
         try {
             // Create open file dialog using StorageProvider API.
             var options = new FilePickerOpenOptions {

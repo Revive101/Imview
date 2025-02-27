@@ -327,7 +327,7 @@ public class GoalCompleteLogicEditor : EditorWindowBase<GoalCompleteLogic> {
             }
     };
 
-    private static Border CreateGroupBox(string header, Control content) => new Border {
+    private static new Border CreateGroupBox(string header, Control content) => new() {
         BorderBrush = Brushes.Gray,
         BorderThickness = new Thickness(1),
         CornerRadius = EditorConstants.DEFAULT_CORNER_RADIUS,
@@ -396,7 +396,7 @@ public class GoalCompleteLogicEditor : EditorWindowBase<GoalCompleteLogic> {
         }
     }
 
-    private void Cancel() {
+    protected override void Cancel() {
         ResultSource.SetResult(_logic);
         Close();
     }
@@ -404,6 +404,6 @@ public class GoalCompleteLogicEditor : EditorWindowBase<GoalCompleteLogic> {
     /// <summary>
     /// Gets the result of the editor.
     /// </summary>
-    public Task<GoalCompleteLogic> GetResultAsync() => ResultSource.Task;
+    public override Task<GoalCompleteLogic> GetResultAsync() => ResultSource.Task;
     
 }

@@ -45,10 +45,10 @@ namespace Imview.Core.Controls.Templates;
 /// </summary>
 public partial class QuestTemplateEditor : UserControl {
 
-    public static readonly StyledProperty<QuestTemplate> TemplateProperty =
+    public static new readonly StyledProperty<QuestTemplate> TemplateProperty =
         AvaloniaProperty.Register<QuestTemplateEditor, QuestTemplate>(nameof(Template));
 
-    public QuestTemplate Template {
+    public new QuestTemplate Template {
         get => GetValue(TemplateProperty);
         set {
             SetValue(TemplateProperty, value);

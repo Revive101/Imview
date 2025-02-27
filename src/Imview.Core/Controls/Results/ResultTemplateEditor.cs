@@ -225,7 +225,8 @@ public class ResultTemplateEditor : EditorWindowBase<Result> {
         
         return container;
     }
-    
+
+#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
     private async void EditComplexProperty(PropertyInfo property) {
         // For complex properties, we'd typically launch a nested editor.
         // This is a placeholder for complex property editing.
@@ -235,7 +236,8 @@ public class ResultTemplateEditor : EditorWindowBase<Result> {
             .WithDuration(TimeSpan.FromSeconds(5))
             .Send();
     }
-    
+#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
+
     private void InitializeValues() {
         if (_template == null) {
             return;

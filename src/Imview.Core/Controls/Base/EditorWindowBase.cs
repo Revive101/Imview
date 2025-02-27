@@ -114,7 +114,7 @@ public abstract class EditorWindowBase<T> : Window where T : class {
     /// <summary>
     /// Gets the result of the editor operation.
     /// </summary>
-    public Task<T> GetResultAsync() => ResultSource.Task;
+    public virtual Task<T> GetResultAsync() => ResultSource.Task;
 
     /// <summary>
     /// Called when the editor is cancelled.
