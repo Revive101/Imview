@@ -118,16 +118,18 @@ public sealed class QuestBuilder {
                 };
 
                 // Attempt to deserialize the ClientTags field of the packet.
-                var clientTags = packet.ClientTags.Replace(" ", string.Empty);
-                var clientTagsBytes = Convert.FromHexString(clientTags);
-                var serializer = new ObjectSerializer(false, SerializerFlags.None);
-                try {
-                    if (serializer.Deserialize<ClientTagList>(clientTagsBytes, 1, out var clientTagsObject)) {
-                        goalTemplate.m_clientTags = clientTagsObject.m_clientTags;
+                if (packet.ClientTags is not null && packet.ClientTags.Length > 0) {
+                    var clientTags = packet.ClientTags?.Replace(" ", string.Empty);
+                    var clientTagsBytes = Convert.FromHexString(clientTags!);
+                    var serializer = new ObjectSerializer(false, SerializerFlags.None);
+                    try {
+                        if (serializer.Deserialize<ClientTagList>(clientTagsBytes, 1, out var clientTagsObject)) {
+                            goalTemplate.m_clientTags = clientTagsObject.m_clientTags;
+                        }
                     }
-                }
-                catch {
-                    // If deserialization fails, we just skip setting the client tags.
+                    catch {
+                        // If deserialization fails, we just skip setting the client tags.
+                    }
                 }
 
                 template.m_goals.Add(goalTemplate);

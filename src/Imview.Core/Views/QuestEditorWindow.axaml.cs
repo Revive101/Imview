@@ -24,6 +24,7 @@ using Avalonia.Interactivity;
 using Avalonia.LogicalTree;
 using Avalonia.Markup.Xaml;
 using Imcodec.ObjectProperty.TypeCache;
+using Imview.Core.Common.Constants;
 using Imview.Core.Services;
 using System;
 using System.Threading.Tasks;
@@ -32,13 +33,18 @@ namespace Imview.Core.Views;
 
 public partial class QuestEditorWindow : Avalonia.Controls.Window {
 
-    private readonly QuestTemplate _originalTemplate;
-    private bool _hasChanges;
+    private readonly QuestTemplate? _originalTemplate;
 
     public QuestTemplate EditedTemplate { get; private set; }
 
     public QuestEditorWindow() {
         InitializeComponent();
+
+        _originalTemplate = null;
+        EditedTemplate = new QuestTemplate();
+
+        Height = EditorConstants.DEFAULT_WINDOW_HEIGHT;
+        Width = EditorConstants.DEFAULT_WINDOW_WIDTH;
     }
 
     public QuestEditorWindow(QuestTemplate template, bool isReadOnly = false) {
@@ -111,7 +117,5 @@ public partial class QuestEditorWindow : Avalonia.Controls.Window {
     }
 
     private void CloseButton_Click(object sender, RoutedEventArgs e) => Close();
-
-    public bool HasChanges() => _hasChanges;
 
 }

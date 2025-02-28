@@ -25,6 +25,6 @@ namespace Imview.Core.Views;
 
 public partial class PacketQuestView : UserControl {
 
-    public PacketQuestView() => AvaloniaXamlLoader.Load(this);
+   public PacketQuestView() => AvaloniaXamlLoader.Load(this);
 
 }

@@ -59,7 +59,7 @@ public class SendQuestPacket {
     public ulong QuestID { get; set;}
 
     [PacketReaderService.PacketField("QuestTitle", PacketReaderService.ExtractMethod.ASCII)]
-    public string QuestTitle { get; set; }
+    public string? QuestTitle { get; set; }
 
 }
 
@@ -72,19 +72,19 @@ public class SendGoalPacket {
     public uint GoalNameID { get; set; }
 
     [PacketReaderService.PacketField("GoalTitle", PacketReaderService.ExtractMethod.ASCII)]
-    public string GoalTitle { get; set; }
+    public string? GoalTitle { get; set; }
 
     [PacketReaderService.PacketField("GoalLocation", PacketReaderService.ExtractMethod.ASCII)]
-    public string GoalLocation { get; set; }
+    public string? GoalLocation { get; set; }
 
     [PacketReaderService.PacketField("GoalDestinationZone", PacketReaderService.ExtractMethod.ASCII)]
-    public string GoalDestinationZone { get; set; }
+    public string? GoalDestinationZone { get; set; }
 
     [PacketReaderService.PacketField("GoalImage1", PacketReaderService.ExtractMethod.ASCII)]
-    public string GoalImage1 { get; set; }
+    public string? GoalImage1 { get; set; }
 
     [PacketReaderService.PacketField("GoalImage2", PacketReaderService.ExtractMethod.Hex)]
-    public string GoalImage2 { get; set; }
+    public string? GoalImage2 { get; set; }
 
     [PacketReaderService.PacketField("GoalType", PacketReaderService.ExtractMethod.Ubyte)]
     public byte GoalType { get; set; }
@@ -93,7 +93,7 @@ public class SendGoalPacket {
     public uint GoalTotal { get; set; }
 
     [PacketReaderService.PacketField("ClientTags", PacketReaderService.ExtractMethod.Hex)]
-    public string ClientTags { get; set; }
+    public string? ClientTags { get; set; }
 
     [PacketReaderService.PacketField("NoQuestHelper", PacketReaderService.ExtractMethod.Ubyte)]
     public byte NoQuestHelper { get; set; }
