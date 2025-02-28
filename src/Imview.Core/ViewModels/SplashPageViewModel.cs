@@ -29,7 +29,7 @@ public class SplashPageViewModel : ViewModelBase {
 
     public ObservableCollection<SplashSectionViewModel> Sections { get; }
 
-    public SplashPageViewModel(MainWindowViewModel mainViewModel) 
+    public SplashPageViewModel(MainWindowViewModel mainViewModel)
         => Sections = [
             new SplashSectionViewModel(
                 "Quests",
@@ -38,35 +38,45 @@ public class SplashPageViewModel : ViewModelBase {
                 "Get Quests From Packet Capture",
                 mainViewModel.CreateNewQuest,
                 mainViewModel.LoadQuest,
-                mainViewModel.GetQuestsFromPacketCapture)
+                mainViewModel.GetQuestsFromPacketCapture),
+            new SplashSectionViewModel(
+                "Files",
+                "Unpack KIWADs",
+                "Unpack KIWADs & Deserialize",
+                "",
+                () => mainViewModel.UnpackKiwad(false),
+                () => mainViewModel.UnpackKiwad(true),
+                null)
         ];
 }
 
-public class SplashSectionViewModel {
+public class SplashSectionViewModel(
+    string title,
+    string createButtonText,
+    string loadButtonText,
+    string getQuestsFromPacketCaptureButtonText,
+    System.Action? createAction,
+    System.Action? loadAction,
+    System.Action? getQuestsFromPacketCaptureAction) {
 
-    public string Title { get; }
-    public string CreateButtonText { get; }
-    public string LoadButtonText { get; }
-    public string GetQuestsFromPacketCaptureButtonText { get; }
-    public ICommand CreateCommand { get; }
-    public ICommand LoadCommand { get; }
-    public ICommand GetQuestsFromPacketCaptureCommand { get; }
-
-    public SplashSectionViewModel(
-        string title, 
-        string createButtonText, 
-        string loadButtonText,
-        string getQuestsFromPacketCaptureButtonText,
-        System.Action createAction, 
-        System.Action loadAction,
-        System.Action getQuestsFromPacketCaptureAction) {
-        Title = title;
-        CreateButtonText = createButtonText;
-        LoadButtonText = loadButtonText;
-        GetQuestsFromPacketCaptureButtonText = getQuestsFromPacketCaptureButtonText;
-        CreateCommand = ReactiveCommand.Create(createAction);
-        LoadCommand = ReactiveCommand.Create(loadAction);
-        GetQuestsFromPacketCaptureCommand = ReactiveCommand.Create(getQuestsFromPacketCaptureAction);
-    }
+    public string Title { get; } = title;
+    public string CreateButtonText { get; } = createButtonText;
+    public string LoadButtonText { get; } = loadButtonText;
+    public string GetQuestsFromPacketCaptureButtonText { get; } = getQuestsFromPacketCaptureButtonText;
+    public ICommand? CreateCommand { get; }
+        = createAction != null
+            ? ReactiveCommand.Create(createAction)
+            : null;
+    public ICommand? LoadCommand { get; }
+        = loadAction != null
+            ? ReactiveCommand.Create(loadAction)
+            : null;
+    public ICommand? GetQuestsFromPacketCaptureCommand { get; }
+        = getQuestsFromPacketCaptureAction != null
+            ? ReactiveCommand.Create(getQuestsFromPacketCaptureAction)
+            : null;
+    public bool HasThirdButton
+        => !string.IsNullOrEmpty(GetQuestsFromPacketCaptureButtonText)
+        && GetQuestsFromPacketCaptureCommand != null;
 
 }
