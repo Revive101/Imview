@@ -89,6 +89,12 @@ public class SendGoalPacket {
     [PacketReaderService.PacketField("GoalType", PacketReaderService.ExtractMethod.Ubyte)]
     public byte GoalType { get; set; }
 
+    [PacketReaderService.PacketField("GoalTotal", PacketReaderService.ExtractMethod.Uint)]
+    public uint GoalTotal { get; set; }
+
+    [PacketReaderService.PacketField("ClientTags", PacketReaderService.ExtractMethod.Hex)]
+    public string ClientTags { get; set; }
+
     [PacketReaderService.PacketField("NoQuestHelper", PacketReaderService.ExtractMethod.Ubyte)]
     public byte NoQuestHelper { get; set; }
 

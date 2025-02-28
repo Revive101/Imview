@@ -27,6 +27,7 @@ using Imview.Core.Services;
 using Avalonia.Controls;
 using System.Collections.Generic;
 using Imcodec.ObjectProperty.TypeCache;
+using System.Threading.Tasks;
 
 namespace Imview.Core.ViewModels;
 
@@ -132,8 +133,37 @@ public class MainWindowViewModel : ViewModelBase {
         }
     }
 
-    public void EditQuestTemplate(QuestTemplate template) {
-        CurrentViewModel = new QuestTemplateEditorViewModel(this, template);
+    /// <summary>
+    /// Opens a quest template editor in a new window.
+    /// </summary>
+    /// <param name="template">The quest template to edit</param>
+    /// <returns>A task that completes when the editor is closed</returns>
+    public async Task OpenQuestEditorInNewWindow(QuestTemplate template) {
+        try {
+            if (_mainWindow == null) {
+                MessageService.Error("Main window is not initialized.")
+                    .WithDuration(TimeSpan.FromSeconds(5))
+                    .Send();
+
+                return;
+            }
+
+            // Create the editor window.
+            var editorWindow = new Views.QuestEditorWindow(template);
+            await editorWindow.ShowDialog(_mainWindow);
+
+            // If the template was modified, update it in the current view model.
+            if (editorWindow.HasChanges() && CurrentViewModel is PacketQuestViewModel packetViewModel) {
+                MessageService.Info("Quest template changes saved.")
+                    .WithDuration(TimeSpan.FromSeconds(3))
+                    .Send();
+            }
+        }
+        catch (Exception ex) {
+            MessageService.Error($"Error opening quest editor: {ex.Message}")
+                .WithDuration(TimeSpan.FromSeconds(5))
+                .Send();
+        }
     }
 
     public void ReturnToSplash() {

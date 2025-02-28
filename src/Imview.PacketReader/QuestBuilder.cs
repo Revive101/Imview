@@ -70,6 +70,11 @@ public sealed class QuestBuilder {
 
         if (goalCompilation is not null) {
             template.m_goals = CraftGoalsFromCompilation(goalCompilation!);
+
+            // All of the goals within the goal compilation are starting goals.
+            foreach (var goal in template.m_goals) {
+                template.m_startGoals.Add(goal.m_goalName);
+            }
         }
 
         return template;
@@ -92,7 +97,7 @@ public sealed class QuestBuilder {
         }
 
         // Search through the packets until we find where the quest title matches.
-        var counter = 0;
+        var counter = template.m_goals.Count;
         foreach (var packet in packets) {
             if (packet.QuestID == questID) {
                 // If the template already has this goal, skip.
@@ -100,7 +105,7 @@ public sealed class QuestBuilder {
                     continue;
                 }
 
-                var placeholderGoalName = $"{counter}_{packet.GoalTitle}";
+                var placeholderGoalName = $"{++counter}_{packet.GoalTitle}";
                 var goalTemplate = new GoalTemplate {
                     m_goalName = placeholderGoalName,
                     m_goalNameID = packet.GoalNameID,
@@ -112,13 +117,20 @@ public sealed class QuestBuilder {
                     m_goalType = (GOAL_TYPE) packet.GoalType,
                 };
 
+                // Attempt to deserialize the ClientTags field of the packet.
+                var clientTags = packet.ClientTags.Replace(" ", string.Empty);
+                var clientTagsBytes = Convert.FromHexString(clientTags);
+                var serializer = new ObjectSerializer(false, SerializerFlags.None);
+                try {
+                    if (serializer.Deserialize<ClientTagList>(clientTagsBytes, 1, out var clientTagsObject)) {
+                        goalTemplate.m_clientTags = clientTagsObject.m_clientTags;
+                    }
+                }
+                catch {
+                    // If deserialization fails, we just skip setting the client tags.
+                }
+
                 template.m_goals.Add(goalTemplate);
-                template.m_startGoals ??= [];
-                template.m_startGoals.Add(placeholderGoalName);
-
-                counter++;
-
-                return;
             }
         }
     }
@@ -142,18 +154,34 @@ public sealed class QuestBuilder {
     private static List<GoalTemplate> CraftGoalsFromCompilation(GoalCompilation goalCompilation) {
         var goals = new List<GoalTemplate>();
 
+        var counter = 0;
         foreach (var goal in goalCompilation.m_goals) {
-            var goalTemplate = new GoalTemplate {
-                m_goalNameID = goal.m_goalNameID,
-                m_goalTitle = goal.m_goalTitle,
-                m_locationName = goal.m_goalLocation,
-                m_destinationZone = goal.m_goalDestinationZone,
-                m_displayImage1 = goal.m_goalImage1,
-                m_displayImage2 = goal.m_goalImage2,
-                m_goalType = (GOAL_TYPE) goal.m_goalType,
+            // Create a new instance of the correct type based on the goal type.
+            GoalTemplate goalInstance = goal.m_goalType switch {
+                (int) GOAL_TYPE.GOAL_TYPE_BOUNTY => new BountyGoalTemplate(),
+                (int) GOAL_TYPE.GOAL_TYPE_BOUNTYCOLLECT => new BountyGoalTemplate(),
+                (int) GOAL_TYPE.GOAL_TYPE_SCAVENGE => new ScavengeGoalTemplate(),
+                (int) GOAL_TYPE.GOAL_TYPE_USAGE => new ScavengeGoalTemplate(),
+                (int) GOAL_TYPE.GOAL_TYPE_PERSONA => new PersonaGoalTemplate(),
+                (int) GOAL_TYPE.GOAL_TYPE_WAYPOINT => new WaypointGoalTemplate(),
+                (int) GOAL_TYPE.GOAL_TYPE_ACHIEVERANK => new AchieveRankGoalTemplate(),
+                _ => throw new NotSupportedException($"Unsupported goal type: {goal.m_goalType}"),
             };
 
-            goals.Add(goalTemplate);
+            goalInstance.m_goalName = $"{++counter}_{goal.m_goalTitle}";
+            goalInstance.m_goalNameID = goal.m_goalNameID;
+            goalInstance.m_goalTitle = goal.m_goalTitle;
+            goalInstance.m_locationName = goal.m_goalLocation;
+            goalInstance.m_destinationZone = goal.m_goalDestinationZone;
+            goalInstance.m_displayImage1 = goal.m_goalImage1;
+            goalInstance.m_displayImage2 = goal.m_goalImage2;
+            goalInstance.m_goalType = (GOAL_TYPE) goal.m_goalType;
+
+            if (goalInstance is BountyGoalTemplate bountyGoalTemplate) {
+                bountyGoalTemplate.m_bountyTotal = goal.m_goalTotal;
+            }
+
+            goals.Add(goalInstance);
         }
 
         return goals;

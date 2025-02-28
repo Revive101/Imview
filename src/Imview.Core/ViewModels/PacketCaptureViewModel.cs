@@ -57,13 +57,14 @@ public class PacketQuestViewModel : ViewModelBase {
     public PacketQuestViewModel(MainWindowViewModel mainViewModel, string filePath, ObservableCollection<QuestTemplate> questTemplates) {
         _mainViewModel = mainViewModel;
         _sourceFilePath = filePath;
-        QuestTemplates = questTemplates ?? [];
+        QuestTemplates = questTemplates ?? new ObservableCollection<QuestTemplate>();
 
         BackToSplashCommand = ReactiveCommand.Create(BackToSplash);
         EditSelectedQuestCommand = ReactiveCommand.Create(EditSelectedQuest);
 
+        // Update the HasQuests property
         this.RaisePropertyChanged(nameof(HasQuests));
-        
+
         if (HasQuests) {
             MessageService.Info($"Found {QuestTemplates.Count} quests in the packet capture.")
                 .WithDuration(TimeSpan.FromSeconds(3))
@@ -74,10 +75,10 @@ public class PacketQuestViewModel : ViewModelBase {
     private void BackToSplash() 
         => _mainViewModel.ReturnToSplash();
 
-    private void EditSelectedQuest() {
-        if (SelectedQuest != null) {
-            _mainViewModel.EditQuestTemplate(SelectedQuest);
+    private async void EditSelectedQuest() {
+        if (SelectedQuest is not null) {
+            await _mainViewModel.OpenQuestEditorInNewWindow(SelectedQuest);
         }
     }
-    
+
 }
