@@ -37,13 +37,19 @@
 
             <!-- Sections -->
             <ItemsControl ItemsSource="{Binding Sections}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <UniformGrid Columns="2" Rows="2" HorizontalAlignment="Center" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <Border Background="#333333"
                                 CornerRadius="8"
-                                Margin="0,8"
+                                Margin="10"
                                 Padding="20"
-                                Width="400">
+                                Width="350"
+                                MinHeight="250">
                             <StackPanel Spacing="16">
                                 <TextBlock Text="{Binding Title}"
                                          FontSize="24"
