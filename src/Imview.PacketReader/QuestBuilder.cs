@@ -44,7 +44,7 @@ public sealed class QuestBuilder {
         );
 
         var templates = questOfferPackets
-            .Select(CovertOfferPacketToTemplate)
+            .Select(ConvertOfferPacketToTemplate)
             .ToList();
         foreach (var template in templates) {
             AddQuestIDToQuestTemplate(template, sendQuestPackets);
@@ -54,7 +54,7 @@ public sealed class QuestBuilder {
         return templates;
     }
 
-    private static QuestTemplate CovertOfferPacketToTemplate(QuestOfferPacket packet) {
+    private static QuestTemplate ConvertOfferPacketToTemplate(QuestOfferPacket packet) {
         // Craft the initial template.
         var template = new QuestTemplate {
             m_questName = packet.QuestName,
@@ -106,16 +106,20 @@ public sealed class QuestBuilder {
                 }
 
                 var placeholderGoalName = $"{++counter}_{packet.GoalTitle}";
-                var goalTemplate = new GoalTemplate {
-                    m_goalName = placeholderGoalName,
-                    m_goalNameID = packet.GoalNameID,
-                    m_goalTitle = packet.GoalTitle,
-                    m_locationName = packet.GoalLocation,
-                    m_destinationZone = packet.GoalDestinationZone,
-                    m_displayImage1 = packet.GoalImage1,
-                    m_displayImage2 = packet.GoalImage2,
-                    m_goalType = (GOAL_TYPE) packet.GoalType,
-                };
+
+                GoalTemplate goalTemplate = GetGoalFromType((GOAL_TYPE) packet.GoalType);
+                goalTemplate.m_goalName = placeholderGoalName;
+                goalTemplate.m_goalNameID = packet.GoalNameID;
+                goalTemplate.m_goalTitle = packet.GoalTitle;
+                goalTemplate.m_locationName = packet.GoalLocation;
+                goalTemplate.m_destinationZone = packet.GoalDestinationZone;
+                goalTemplate.m_displayImage1 = packet.GoalImage1;
+                goalTemplate.m_displayImage2 = packet.GoalImage2;
+                goalTemplate.m_goalType = (GOAL_TYPE) packet.GoalType;
+
+                if (goalTemplate is BountyGoalTemplate bountyGoalTemplate) {
+                    bountyGoalTemplate.m_bountyTotal = (int) packet.GoalTotal;
+                }
 
                 // Attempt to deserialize the ClientTags field of the packet.
                 if (packet.ClientTags is not null && packet.ClientTags.Length > 0) {
@@ -159,16 +163,7 @@ public sealed class QuestBuilder {
         var counter = 0;
         foreach (var goal in goalCompilation.m_goals) {
             // Create a new instance of the correct type based on the goal type.
-            GoalTemplate goalInstance = goal.m_goalType switch {
-                (int) GOAL_TYPE.GOAL_TYPE_BOUNTY => new BountyGoalTemplate(),
-                (int) GOAL_TYPE.GOAL_TYPE_BOUNTYCOLLECT => new BountyGoalTemplate(),
-                (int) GOAL_TYPE.GOAL_TYPE_SCAVENGE => new ScavengeGoalTemplate(),
-                (int) GOAL_TYPE.GOAL_TYPE_USAGE => new ScavengeGoalTemplate(),
-                (int) GOAL_TYPE.GOAL_TYPE_PERSONA => new PersonaGoalTemplate(),
-                (int) GOAL_TYPE.GOAL_TYPE_WAYPOINT => new WaypointGoalTemplate(),
-                (int) GOAL_TYPE.GOAL_TYPE_ACHIEVERANK => new AchieveRankGoalTemplate(),
-                _ => throw new NotSupportedException($"Unsupported goal type: {goal.m_goalType}"),
-            };
+            GoalTemplate goalInstance = GetGoalFromType((GOAL_TYPE) goal.m_goalType);
 
             goalInstance.m_goalName = $"{++counter}_{goal.m_goalTitle}";
             goalInstance.m_goalNameID = goal.m_goalNameID;
@@ -188,5 +183,17 @@ public sealed class QuestBuilder {
 
         return goals;
     }
+
+    private static GoalTemplate GetGoalFromType(GOAL_TYPE goalType)
+        => goalType switch {
+            GOAL_TYPE.GOAL_TYPE_BOUNTY => new BountyGoalTemplate(),
+            GOAL_TYPE.GOAL_TYPE_BOUNTYCOLLECT => new BountyGoalTemplate(),
+            GOAL_TYPE.GOAL_TYPE_SCAVENGE => new ScavengeGoalTemplate(),
+            GOAL_TYPE.GOAL_TYPE_USAGE => new ScavengeGoalTemplate(),
+            GOAL_TYPE.GOAL_TYPE_PERSONA => new PersonaGoalTemplate(),
+            GOAL_TYPE.GOAL_TYPE_WAYPOINT => new WaypointGoalTemplate(),
+            GOAL_TYPE.GOAL_TYPE_ACHIEVERANK => new AchieveRankGoalTemplate(),
+            _ => throw new NotSupportedException($"Unsupported goal type: {goalType}"),
+        };
 
 }
