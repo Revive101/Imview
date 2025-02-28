@@ -35,37 +35,44 @@
                 </StackPanel>
             </StackPanel>
 
-            <!-- Quests Section -->
-            <Border Background="#333333"
-                    CornerRadius="8"
-                    Margin="0,8"
-                    Padding="20"
-                    Width="400">
-                <StackPanel Spacing="16">
-                    <TextBlock Text="{Binding Sections[0].Title}"
-                             FontSize="24"
-                             FontWeight="SemiBold"
-                             Foreground="White"/>
-                    
-                    <StackPanel Spacing="8">
-                        <Button Content="{Binding Sections[0].CreateButtonText}"
-                                Command="{Binding Sections[0].CreateCommand}"
-                                HorizontalAlignment="Stretch"
-                                Height="40"
-                                Classes="accent"/>
+            <!-- Sections -->
+            <ItemsControl ItemsSource="{Binding Sections}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border Background="#333333"
+                                CornerRadius="8"
+                                Margin="0,8"
+                                Padding="20"
+                                Width="400">
+                            <StackPanel Spacing="16">
+                                <TextBlock Text="{Binding Title}"
+                                         FontSize="24"
+                                         FontWeight="SemiBold"
+                                         Foreground="White"/>
                                 
-                        <Button Content="{Binding Sections[0].LoadButtonText}"
-                                Command="{Binding Sections[0].LoadCommand}"
-                                HorizontalAlignment="Stretch"
-                                Height="40"/>
+                                <StackPanel Spacing="8">
+                                    <Button Content="{Binding CreateButtonText}"
+                                            Command="{Binding CreateCommand}"
+                                            HorizontalAlignment="Stretch"
+                                            Height="40"
+                                            Classes="accent"/>
+                                            
+                                    <Button Content="{Binding LoadButtonText}"
+                                            Command="{Binding LoadCommand}"
+                                            HorizontalAlignment="Stretch"
+                                            Height="40"/>
 
-                        <Button Content="{Binding Sections[0].GetQuestsFromPacketCaptureButtonText}"
-                                Command="{Binding Sections[0].GetQuestsFromPacketCaptureCommand}"
-                                HorizontalAlignment="Stretch"
-                                Height="40"/>
-                    </StackPanel>
-                </StackPanel>
-            </Border>
+                                    <Button Content="{Binding GetQuestsFromPacketCaptureButtonText}"
+                                            Command="{Binding GetQuestsFromPacketCaptureCommand}"
+                                            HorizontalAlignment="Stretch"
+                                            Height="40"
+                                            IsVisible="{Binding HasThirdButton}"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
         </StackPanel>
     </Grid>
 </UserControl>

@@ -160,12 +160,40 @@ public class MainWindowViewModel : ViewModelBase {
     }
 
     /// <summary>
+    /// Unpacks a KIWAD file, with optional deserialization.
+    /// </summary>
+    /// <param name="deserialize">Whether to attempt to deserialize files with supported extensions</param>
+    public async void UnpackKiwad(bool deserialize) {
+        try {
+            if (_mainWindow == null) {
+                MessageService.Error("Main window is not initialized.")
+                    .WithDuration(TimeSpan.FromSeconds(5))
+                    .Send();
+                    
+                return;
+            }
+
+            var result = await KIWadFileService.UnpackKiwadArchiveAsync(_mainWindow, deserialize);
+            if (result) {
+                MessageService.Info($"KIWAD archive unpacked successfully{(deserialize ? " with deserialization" : "")}.")
+                    .WithDuration(TimeSpan.FromSeconds(3))
+                    .Send();
+            }
+        }
+        catch (Exception ex) {
+            MessageService.Error($"Failed to unpack KIWAD: {ex.Message}")
+                .WithDuration(TimeSpan.FromSeconds(5))
+                .Send();
+        }
+    }
+
+    /// <summary>
     /// Returns the main window instance.
     /// </summary>
-    public Avalonia.Controls.Window? GetMainWindow() 
+    public Avalonia.Controls.Window? GetMainWindow()
         => _mainWindow;
 
-    public void ReturnToSplash() 
+    public void ReturnToSplash()
         => CurrentViewModel = new SplashPageViewModel(this);
 
 }
