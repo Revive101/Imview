@@ -75,7 +75,7 @@
                     HorizontalAlignment="Right"
                     Spacing="10"
                     Margin="0,20,0,0">
-            <Button Content="Edit Selected Quest"
+            <Button Content="View Selected Quest"
                     Command="{Binding EditSelectedQuestCommand}"
                     IsEnabled="{Binding HasSelectedQuest}" />
             <Button Content="Return to Main Menu"

@@ -21,6 +21,7 @@ modification, are permitted provided that the following conditions are met:
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
+using Avalonia.LogicalTree;
 using Avalonia.Markup.Xaml;
 using Imcodec.ObjectProperty.TypeCache;
 using Imview.Core.Services;
@@ -40,55 +41,77 @@ public partial class QuestEditorWindow : Avalonia.Controls.Window {
         InitializeComponent();
     }
 
-    public QuestEditorWindow(QuestTemplate template) {
+    public QuestEditorWindow(QuestTemplate template, bool isReadOnly = false) {
         _originalTemplate = template;
         EditedTemplate = template;
         
         InitializeComponent();
-        InitializeEditor();
+        InitializeEditor(isReadOnly);
     }
 
     private void InitializeComponent() {
         AvaloniaXamlLoader.Load(this);
     }
 
-    private void InitializeEditor() {
+    private void InitializeEditor(bool isReadOnly = false) {
         var editor = this.FindControl<Controls.Templates.QuestTemplateEditor>("QuestEditor");
         if (editor != null && _originalTemplate != null) {
             editor.Template = _originalTemplate;
-            Title = $"Edit Quest: {_originalTemplate.m_questName}";
+            
+            if (isReadOnly) {
+                MakeEditorReadOnly(editor);
+                Title = $"View Quest: {_originalTemplate.m_questTitle ?? _originalTemplate.m_questName}";
+            } else {
+                Title = $"Edit Quest: {_originalTemplate.m_questTitle ?? _originalTemplate.m_questName}";
+            }
         }
     }
-
-    private async void SaveButton_Click(object sender, RoutedEventArgs e) {
-        try {
-            var editor = this.FindControl<Controls.Templates.QuestTemplateEditor>("QuestEditor");
-            if (editor?.Template != null) {
-                var success = await TemplateSerializer.SaveTemplateAsync(editor.Template, this);
-                if (success) {
-                    MessageService.Info("Quest template saved successfully.")
-                        .WithDuration(TimeSpan.FromSeconds(3))
-                        .Send();
-                    
-                    _hasChanges = true;
-                    EditedTemplate = editor.Template;
+    
+    private void MakeEditorReadOnly(Controls.Templates.QuestTemplateEditor editor) {
+        DisableEditableControls(editor);
+    }
+    
+    private void DisableEditableControls(Control control) {
+        switch (control) {
+            case TextBox textBox:
+                textBox.IsReadOnly = true;
+                break;
+            case NumericUpDown numericUpDown:
+                numericUpDown.IsEnabled = false;
+                break;
+            case ComboBox comboBox:
+                comboBox.IsEnabled = false;
+                break;
+            case CheckBox checkBox:
+                checkBox.IsEnabled = false;
+                break;
+            case Avalonia.Controls.Button button:
+                if (button.Content is string content && content != "Close") {
+                    button.IsEnabled = false;
+                }
+                break;
+        }
+        
+        // Recursively process child controls
+        if (control is Panel panel) {
+            foreach (var child in panel.Children) {
+                if (child is Control childControl) {
+                    DisableEditableControls(childControl);
+                }
+            }
+        } else if (control is ContentControl contentControl && contentControl.Content is Control childContent) {
+            DisableEditableControls(childContent);
+        } else if (control is ItemsControl itemsControl) {
+            foreach (var item in itemsControl.GetLogicalChildren()) {
+                if (item is Control childControl) {
+                    DisableEditableControls(childControl);
                 }
             }
         }
-        catch (Exception ex) {
-            MessageService.Error($"Error saving template: {ex.Message}")
-                .WithDuration(TimeSpan.FromSeconds(5))
-                .Send();
-        }
     }
 
-    private void CloseButton_Click(object sender, RoutedEventArgs e) {
-        Close();
-    }
+    private void CloseButton_Click(object sender, RoutedEventArgs e) => Close();
 
-    /// <summary>
-    /// Checks if the template was modified during editing.
-    /// </summary>
     public bool HasChanges() => _hasChanges;
 
 }

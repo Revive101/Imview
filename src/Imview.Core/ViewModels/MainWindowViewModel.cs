@@ -148,16 +148,9 @@ public class MainWindowViewModel : ViewModelBase {
                 return;
             }
 
-            // Create the editor window.
-            var editorWindow = new Views.QuestEditorWindow(template);
+            // Create the editor window in read-only mode.
+            var editorWindow = new Views.QuestEditorWindow(template, isReadOnly: true);
             await editorWindow.ShowDialog(_mainWindow);
-
-            // If the template was modified, update it in the current view model.
-            if (editorWindow.HasChanges() && CurrentViewModel is PacketQuestViewModel packetViewModel) {
-                MessageService.Info("Quest template changes saved.")
-                    .WithDuration(TimeSpan.FromSeconds(3))
-                    .Send();
-            }
         }
         catch (Exception ex) {
             MessageService.Error($"Error opening quest editor: {ex.Message}")
