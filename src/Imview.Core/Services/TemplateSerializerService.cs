@@ -43,20 +43,18 @@ public static class TemplateSerializer {
     /// <param name="parentWindow">The parent window for the save dialog</param>
     /// <returns>A task that completes when the save operation is done, with a bool indicating success</returns>
     public static async Task<bool> SaveTemplateAsync(QuestTemplate template, Avalonia.Controls.Window parentWindow) {
-        if (template == null) {
-            throw new ArgumentNullException(nameof(template));
-        }
+        ArgumentNullException.ThrowIfNull(template);
 
         try {
             // Create save file dialog using StorageProvider API.
             var options = new FilePickerSaveOptions {
                 Title = "Save Quest Template",
                 SuggestedFileName = SanitizeFileName(template.m_questName?.ToString() ?? "NewQuest") + VIEW_FILE_EXTENSION,
-                FileTypeChoices = new List<FilePickerFileType> {
+                FileTypeChoices = [
                     new("Imview Template Files") {
                         Patterns = ["*.view"]
                     }
-                }
+                ]
             };
 
             var fileResult = await parentWindow.StorageProvider.SaveFilePickerAsync(options);
@@ -72,7 +70,7 @@ public static class TemplateSerializer {
                 // Create the necessary directories if they don't exist.
                 var directory = Path.GetDirectoryName(filePath);
                 if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory)) {
-                    Directory.CreateDirectory(directory);
+                    _ = Directory.CreateDirectory(directory);
                 }
 
                 // Write serialized file.
@@ -100,11 +98,11 @@ public static class TemplateSerializer {
             // Create open file dialog using StorageProvider API.
             var options = new FilePickerOpenOptions {
                 Title = "Open Quest Template",
-                FileTypeFilter = new List<FilePickerFileType> {
+                FileTypeFilter = [
                     new("Imview Template Files") {
                         Patterns = ["*.view"]
                     }
-                }
+                ]
             };
 
             var fileResult = await parentWindow.StorageProvider.OpenFilePickerAsync(options);
@@ -118,11 +116,8 @@ public static class TemplateSerializer {
             // Deserialize the template from the selected file.
             var serializer = new ObjectSerializer(false);
             var data = File.ReadAllBytes(filePath);
-            if (!serializer.Deserialize<QuestTemplate>(data, 1, out var template)) {
-                return null;
-            }
-
-            return template;
+            
+            return !serializer.Deserialize<QuestTemplate>(data, 1, out var template) ? null : template;
         }
         catch {
             throw;

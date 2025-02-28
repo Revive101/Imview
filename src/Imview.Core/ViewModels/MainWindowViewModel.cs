@@ -159,8 +159,13 @@ public class MainWindowViewModel : ViewModelBase {
         }
     }
 
-    public void ReturnToSplash() {
-        CurrentViewModel = new SplashPageViewModel(this);
-    }
+    /// <summary>
+    /// Returns the main window instance.
+    /// </summary>
+    public Avalonia.Controls.Window? GetMainWindow() 
+        => _mainWindow;
+
+    public void ReturnToSplash() 
+        => CurrentViewModel = new SplashPageViewModel(this);
 
 }
