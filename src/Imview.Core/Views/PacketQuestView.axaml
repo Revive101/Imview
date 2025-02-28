@@ -75,6 +75,9 @@
                     HorizontalAlignment="Right"
                     Spacing="10"
                     Margin="0,20,0,0">
+            <Button Content="Save All Quests"
+                    Command="{Binding SaveAllQuestsCommand}"
+                    IsEnabled="{Binding HasQuests}" />
             <Button Content="View Selected Quest"
                     Command="{Binding EditSelectedQuestCommand}"
                     IsEnabled="{Binding HasSelectedQuest}" />
