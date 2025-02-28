@@ -46,6 +46,14 @@ public class SplashPageViewModel : ViewModelBase {
                 "",
                 () => mainViewModel.UnpackKiwad(false),
                 () => mainViewModel.UnpackKiwad(true),
+                null),
+            new SplashSectionViewModel(
+                "Object Property",
+                "Analyze Blob",
+                "",
+                "",
+                mainViewModel.AnalyzeObjectPropertyBlob,
+                null,
                 null)
         ];
 }
