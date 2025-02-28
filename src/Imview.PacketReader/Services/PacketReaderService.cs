@@ -50,6 +50,7 @@ public class PacketReaderService {
         Gid,
         Ubyte,
         Int,
+        Uint,
     }
 
     /// <summary>
@@ -123,6 +124,7 @@ public class PacketReaderService {
                 ExtractMethod.Hex => GetHexValue(fieldNode),
                 ExtractMethod.Ubyte => GetUbyteValue(fieldNode),
                 ExtractMethod.Int => GetIntValue(fieldNode),
+                ExtractMethod.Uint => GetUintValue(fieldNode),
                 _ => GetDefaultValue(fieldNode, prop.PropertyType)
             };
 
@@ -176,5 +178,8 @@ public class PacketReaderService {
 
     private static int GetIntValue(JsonNode? node) 
         => node?["value"]?.GetValue<int>() ?? 0;
+
+    private static uint GetUintValue(JsonNode? node)
+        => node?["value"]?.GetValue<uint>() ?? 0;
 
 }

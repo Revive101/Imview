@@ -27,13 +27,31 @@ namespace Imview.PacketReader;
 
 public sealed class QuestBuilder {
 
+    private static readonly Dictionary<QuestTemplate, ulong> s_questTemplateIDMap = [];
+
     public static async Task<List<QuestTemplate>> BuildQuestsFromPacketCaptureAsync(string packetCapturePath) {
         var questOfferPackets = await PacketReaderService.ExtractPacketsAsync<QuestOfferPacket>(
             packetCapturePath,
             "MSG_QUESTOFFER"
         );
+        var sendQuestPackets = await PacketReaderService.ExtractPacketsAsync<SendQuestPacket>(
+            packetCapturePath,
+            "MSG_SENDQUEST"
+        );
+        var sendGoalPackets = await PacketReaderService.ExtractPacketsAsync<SendGoalPacket>(
+            packetCapturePath,
+            "MSG_SENDGOAL"
+        );
 
-        return [.. questOfferPackets.Select(CovertOfferPacketToTemplate)];
+        var templates = questOfferPackets
+            .Select(CovertOfferPacketToTemplate)
+            .ToList();
+        foreach (var template in templates) {
+            AddQuestIDToQuestTemplate(template, sendQuestPackets);
+            AddGoalsToQuestTemplate(template, sendGoalPackets);
+        }
+
+        return templates;
     }
 
     private static QuestTemplate CovertOfferPacketToTemplate(QuestOfferPacket packet) {
@@ -43,6 +61,8 @@ public sealed class QuestBuilder {
             m_questTitle = packet.QuestTitle,
             m_questLevel = packet.Level,
             m_mainline = packet.Mainline == 1,
+            m_goals = [],
+            m_startGoals = [],
         };
 
         // Extract the goal compilation from the packet.
@@ -53,6 +73,54 @@ public sealed class QuestBuilder {
         }
 
         return template;
+    }
+
+    private static void AddQuestIDToQuestTemplate(QuestTemplate template, List<SendQuestPacket> packets) {
+        // Search through the packets until we find where the quest title matches.
+        foreach (var packet in packets) {
+            if (packet.QuestTitle == template.m_questTitle) {
+                s_questTemplateIDMap[template] = packet.QuestID;
+
+                return;
+            }
+        }
+    }
+
+    private static void AddGoalsToQuestTemplate(QuestTemplate template, List<SendGoalPacket> packets) {
+        if (!s_questTemplateIDMap.TryGetValue(template, out var questID)) {
+            return;
+        }
+
+        // Search through the packets until we find where the quest title matches.
+        var counter = 0;
+        foreach (var packet in packets) {
+            if (packet.QuestID == questID) {
+                // If the template already has this goal, skip.
+                if (template.m_goals.Any(g => g.m_goalNameID == packet.GoalNameID)) {
+                    continue;
+                }
+
+                var placeholderGoalName = $"{counter}_{packet.GoalTitle}";
+                var goalTemplate = new GoalTemplate {
+                    m_goalName = placeholderGoalName,
+                    m_goalNameID = packet.GoalNameID,
+                    m_goalTitle = packet.GoalTitle,
+                    m_locationName = packet.GoalLocation,
+                    m_destinationZone = packet.GoalDestinationZone,
+                    m_displayImage1 = packet.GoalImage1,
+                    m_displayImage2 = packet.GoalImage2,
+                    m_goalType = (GOAL_TYPE) packet.GoalType,
+                };
+
+                template.m_goals.Add(goalTemplate);
+                template.m_startGoals ??= [];
+                template.m_startGoals.Add(placeholderGoalName);
+
+                counter++;
+
+                return;
+            }
+        }
     }
 
     private static GoalCompilation? ExtractGoalCompilationFromPacket(QuestOfferPacket packet) {
@@ -90,33 +158,5 @@ public sealed class QuestBuilder {
 
         return goals;
     }
-
-}
-
-public class QuestOfferPacket {
-
-    [PacketReaderService.PacketField("MobileID", PacketReaderService.ExtractMethod.Gid)]
-    public ulong MobileID { get; set; }
-
-    [PacketReaderService.PacketField("QuestName", PacketReaderService.ExtractMethod.ASCII)]
-    public string QuestName { get; set; } = string.Empty;
-
-    [PacketReaderService.PacketField("QuestTitle", PacketReaderService.ExtractMethod.ASCII)]
-    public string QuestTitle { get; set; } = string.Empty;
-
-    [PacketReaderService.PacketField("QuestInfo", PacketReaderService.ExtractMethod.ASCII)]
-    public string QuestInfo { get; set; } = string.Empty;
-
-    [PacketReaderService.PacketField("Level")]
-    public int Level { get; set; }
-
-    [PacketReaderService.PacketField("Rewards", PacketReaderService.ExtractMethod.Hex)]
-    public string Rewards { get; set; } = string.Empty;
-
-    [PacketReaderService.PacketField("GoalData", PacketReaderService.ExtractMethod.Hex)]
-    public string GoalData { get; set; } = string.Empty;
-
-    [PacketReaderService.PacketField("Mainline", PacketReaderService.ExtractMethod.Ubyte)]
-    public byte Mainline { get; set; }
 
 }
